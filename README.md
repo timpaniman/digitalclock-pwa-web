@@ -37,3 +37,7 @@ Edit `index.html` (HTML/CSS/JS). Icons are in `icons/`.
 ## License
 
 MIT
+
+## See also
+
+[Web vs PWA comparison](./WEB-VS-PWA.md)
