@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0e12" />
+    <meta name="description" content="A simple installable digital clock PWA using your device local time." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Digital Clock" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>Digital Clock</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0a0e12;
+        color: #7effb0;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .clock {
+        height: 100%;
+        box-sizing: border-box;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #time {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: clamp(48px, 14vw, 96px);
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      #date {
+        margin-top: 16px;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        font-size: clamp(16px, 4.5vw, 28px);
+        color: #b0c4ba;
+        text-align: center;
+        padding: 0 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock">
+      <div id="time"></div>
+      <div id="date"></div>
+    </div>
+    <script>
+      const timeEl = document.getElementById("time");
+      const dateEl = document.getElementById("date");
+
+      function pad(value) {
+        return String(value).padStart(2, "0");
+      }
+
+      function refreshClock() {
+        const now = new Date();
+        timeEl.textContent = [
+          pad(now.getHours()),
+          pad(now.getMinutes()),
+          pad(now.getSeconds())
+        ].join(":");
+        dateEl.textContent = now.toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        });
+      }
+
+      refreshClock();
+      setInterval(refreshClock, 200);
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch((err) => {
+            console.warn("Service worker registration failed:", err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
